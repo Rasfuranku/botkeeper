@@ -1,0 +1,11 @@
+body {
+  background-color: #15191F;
+}
+
+h1,h2, h3, h4, h5, h6 {
+  color: #1AC1FE;
+}
+
+.bot_actions {
+  padding: 25px;
+}
