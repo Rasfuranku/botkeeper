@@ -1,15 +1,14 @@
 import { useState, FC } from 'react'
 import { Button, Stack, ThemeProvider } from "@mui/material";
+import { v4 as uuidv4 } from 'uuid';
 
 import theme from "../../theme/PaletteModule";
 import Modal from '../Modal/Modal';
 import { getTasks } from '../utils/utils';
-import { ITask } from '../../models/ITask';
-import { IBot } from '../../models/IBot';
-import Socket from '../../services/Socket';
-const socket = Socket();
+import ITask from '../../models/ITask';
+import IBot from '../../models/IBot';
 
-const Controls: FC<{ handleAddNewBot: any }> = ({ handleAddNewBot }) => {
+const Controls: FC<{ handleAddNewBot: any, socket: any }> = ({ handleAddNewBot, socket }) => {
     const [open, setOpen] = useState(false);
     
     const handleModalOpenClose = (status: boolean) => {
@@ -19,11 +18,13 @@ const Controls: FC<{ handleAddNewBot: any }> = ({ handleAddNewBot }) => {
     const createBot = (name: string) => {
         const tasks: ITask[] = getTasks();
         const newBot: IBot = {
+            id: uuidv4(),
             name,
             tasks,
         }
         handleAddNewBot(newBot);
         handleModalOpenClose(true);
+                
         socket.emit(newBot);
     }
 
@@ -40,7 +41,6 @@ const Controls: FC<{ handleAddNewBot: any }> = ({ handleAddNewBot }) => {
                         variant="contained"
                         onClick={() => handleModalOpenClose(true)}
                         color="primary">New Bot</Button>
-                    <Button variant="outlined" color="secondary">List of Actions</Button>
                 </ThemeProvider>
             </Stack>
             <Modal open={open} handleClose={handleModalOpenClose} handleCreateBot={createBot}/>

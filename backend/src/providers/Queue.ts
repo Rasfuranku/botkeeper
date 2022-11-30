@@ -1,8 +1,9 @@
-import ITask from "src/models/ITask";
+import Logger from "../config/Logger";
+import { IJob } from "../models/IJob";
 
 class Queue {
     private static queueInstance: Queue;
-    private queue: ITask[] = [];
+    private queue: IJob[] = [];
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     private constructor() {}
@@ -14,11 +15,12 @@ class Queue {
         return Queue.queueInstance;
     }
     
-    enQueue(tasks: ITask[]) {
-        this.queue.push(...tasks);
+    enQueue(job: IJob[]) {
+        this.queue.push(...job);
+        Logger.logger.info(`Job | %s | added to the queue`, job);
     }
 
-    deQueue(): ITask {
+    deQueue(): IJob {
         return this.queue.shift();
     }
 

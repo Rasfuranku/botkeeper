@@ -1,6 +1,7 @@
+import { TaskStatus } from "./TaskStatus";
 export default interface ITask {
-    // id: string,
+    id: string,
     description: string,
     duration: number;
-    status?: boolean;
+    status: TaskStatus;
 }

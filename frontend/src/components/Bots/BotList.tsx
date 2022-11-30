@@ -1,22 +1,21 @@
-import { FC, useEffect } from 'react';
-import { Box, Grid } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
+import { FC, memo } from 'react';
+import { Box, Grid, Typography } from '@mui/material';
 
 import Bot from "./Bot";
-import { IBot } from '../../models/IBot';
+import IBot from '../../models/IBot';
 
 const BotList: FC<{ bots: IBot[] }> = ({ bots }) => {
     return (
         <Box sx={{ flexGrow: 1, padding: 3 }}>
+            {!bots.length && 
+                (<Typography variant="h6" gutterBottom={false} align="center">There are no Bots.</Typography>)}
             <Grid container spacing={2}>
                 {bots && bots.map(bot => (
-                    <Grid item xs={4} key={uuidv4()}>
-                        <Bot bot={bot}/>
-                    </Grid>
+                    <Bot key={bot.id} bot={bot}/>
                 ))}
             </Grid>
         </Box>
     )
 }
 
-export default BotList;
+export default memo(BotList);

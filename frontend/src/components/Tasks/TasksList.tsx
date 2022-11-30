@@ -1,25 +1,24 @@
-import { FC } from 'react';
-import { Box, Paper } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
+import { FC, memo } from 'react';
+import { Box, styled } from '@mui/material';
 
-import { ITask } from '../../models/ITask';
+import ITask from '../../models/ITask';
 import Task from './Task';
+
+const Item = styled(Box)(() => ({
+    display: 'flex',
+    '& > :not(style)': {
+        margin: 10,
+        width: "40%",
+        minHeight: 60,
+    },
+}));
 
 const TasksList: FC<{ tasks: ITask[]}> = ({ tasks }) => {
     return (
-        <Box
-            sx={{
-            display: 'flex',
-            '& > :not(style)': {
-                m: 1,
-                width: "40%",
-                height: 60,
-            },
-        }}
-        >
-            {tasks && tasks.map(task => <Task taskDescription={task.description} key={uuidv4()}/>)}
-        </Box>
+        <Item>
+            {tasks && tasks.map(task => <Task key={task.id} task={task} />)}
+        </Item>
     );
 };
 
-export default TasksList;
+export default memo(TasksList);

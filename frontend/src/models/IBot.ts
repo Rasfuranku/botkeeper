@@ -1,6 +1,7 @@
-import { ITask } from "./ITask";
+import ITask from "./ITask";
 
-export interface IBot {
+export default interface IBot {
+    id: string
     name: string
     tasks: ITask[]
 }

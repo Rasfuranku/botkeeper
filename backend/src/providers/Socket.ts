@@ -1,43 +1,55 @@
 import * as http from 'http';
 import * as io from "socket.io";
-import { IBot } from "src/models/IBot";
+
+import JobBuilder from '../builders/JobBuilder';
+import { IBot } from "../models/IBot";
+import { IJob } from '../models/IJob';
 import Queue from "./Queue";
+import { SOCKET_CONSTANTS } from '../constants/socketConstants';
+import Logger from '../config/Logger';
 
 class Socket {
     private io;
-    private server: http.Server;
     private queue: Queue;
+    static socket;
+    private server: http.Server;
     
     constructor(server: http.Server) {
+        this.server = server;
         this.queue = Queue.getQueueInstance();
-        this.init(server);
+        this.init();
         this.start();
     }
 
-    init(server) {
-        this.io = new io.Server(server, {
+    init() {
+        this.io = new io.Server(this.server, {
             cors: {
-                origin: `${process.env.SERVER_URI}:${process.env.BACKEND_PORT}`
+                origin: `${process.env.SERVER_URI}:${process.env.CLIENT_PORT}`
             }
         });
     }
 
     start() {
-        console.log("socket");
+        Logger.logger.info("Socket started");
         
         this.io.on('connection', (socket) => {
-            console.log('a user connected');
+            Logger.logger.info("User connected %s", socket.id);
+            
             socket.on('disconnect', () => {
-                console.log('user disconnected');
+                Logger.logger.warn("User Disconnected %s", socket.id);
             });
-            socket.on('new_tasks', (bot: IBot) => {
-                console.log(bot);
-                
-                console.log('Bot name: ' + bot.name);
-                this.queue.enQueue(bot.tasks);
+            
+            socket.on(SOCKET_CONSTANTS.NEW_TASKS, (bot: IBot) => {
+                this.queue.enQueue(JobBuilder.builder(bot));
             });
-            socket.emit("finished_task")
+            
+            Socket.socket = socket;
         });
+    }
+    
+    static emit(job: IJob) {
+        Socket.socket.emit(SOCKET_CONSTANTS.FINISHED_TASKS, job);
+        Logger.logger.info(`%s - Job | %s | finished.`,  new Date(), job.botId);
     }
 }
 

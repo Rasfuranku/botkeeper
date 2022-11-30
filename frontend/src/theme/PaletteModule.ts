@@ -1,6 +1,4 @@
-import * as React from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Button from '@mui/material/Button';
+import { createTheme } from '@mui/material/styles';
 
 const primaryColor = '#242732';
 const secondaryColor = '#1B1E28';
@@ -16,7 +14,7 @@ const theme = createTheme({
           color: contrastText,
         }
       }
-    }
+    },
   },
   palette: {
     primary: {
@@ -30,7 +28,7 @@ const theme = createTheme({
     },
     text: {
       primary: primaryText,
-    }
+    },
   },
 });
 
